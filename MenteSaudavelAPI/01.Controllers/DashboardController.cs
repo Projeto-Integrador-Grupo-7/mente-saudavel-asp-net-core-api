@@ -1,11 +1,9 @@
 using MenteSaudavelAPI._02.Services.Interfaces.Services;
 using MenteSaudavelAPI._04.Infrastructure.Dto;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MenteSaudavelAPI._01.API.Controllers
 {
-    [Authorize]
     [ApiController]
     [Route("api/dashboard")]
     public class DashboardController : ControllerBase

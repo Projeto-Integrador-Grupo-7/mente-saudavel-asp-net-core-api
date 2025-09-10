@@ -11,18 +11,7 @@ namespace MenteSaudavelAPI
         {
             IServiceCollection services = builder.Services;
 
-            //services.AddCors(options =>
-            //{
-            //    options.AddPolicy("AllowReactDev", policy =>
-            //    {
-            //        policy.AllowAnyOrigin()
-            //              .AllowAnyHeader()
-            //              .AllowAnyMethod();
-            //    });
-            //});
-
             services.AddControllers();
-            services.AddAuthentication();
 
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
@@ -39,8 +28,6 @@ namespace MenteSaudavelAPI
 
         public static void ConfigureApplication(WebApplication app)
         {
-            //app.UseCors("AllowReactDev");
-
             app.UseDefaultFiles();
             app.UseStaticFiles();
 
@@ -51,12 +38,7 @@ namespace MenteSaudavelAPI
                 app.UseHttpsRedirection();
             }
 
-            app.UseAuthentication();
-            app.UseAuthorization();
-
             app.MapControllers();
-
-            //app.MapFallbackToFile("/index.html");
         }
     }
 }
