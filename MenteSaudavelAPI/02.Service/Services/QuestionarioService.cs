@@ -104,7 +104,7 @@ namespace MenteSaudavelAPI._02.Services.Services
                 dashboardTO.DataInicio.HasValue ||
                 dashboardTO.DataFim.HasValue ||
                 dashboardTO.Genero is not null ||
-                dashboardTO.Idade.HasValue;
+                dashboardTO.Idade.HasValue && dashboardTO.Idade > 0;
 
             if (deveFiltrar)
             {
