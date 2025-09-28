@@ -129,7 +129,7 @@ namespace MenteSaudavelAPI._02.Services.Services
                 queryQuestionarios = queryQuestionarios.Where(questionario => questionario.Respondente.Genero.Valor == dashboardTO.Genero.Valor);
             }
 
-            if (dashboardTO.Idade.HasValue)
+            if (dashboardTO.Idade.HasValue && dashboardTO.Idade > 0)
             {
                 var hoje = DateTime.Today;
                 var idade = dashboardTO.Idade.Value;
