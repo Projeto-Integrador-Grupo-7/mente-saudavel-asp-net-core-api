@@ -11,6 +11,20 @@ namespace MenteSaudavelAPI
         {
             IServiceCollection services = builder.Services;
 
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowReact",
+                    policy =>
+                    {
+                        policy
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials()
+                        .WithOrigins("http://localhost:5173"); // Alterar a porta se necessário
+                    }
+                );
+            });
+
             services.AddControllers();
 
             services.AddEndpointsApiExplorer();
@@ -37,6 +51,8 @@ namespace MenteSaudavelAPI
                 app.UseSwaggerUI();
                 app.UseHttpsRedirection();
             }
+
+            app.UseCors("AllowReact");
 
             app.MapControllers();
         }
