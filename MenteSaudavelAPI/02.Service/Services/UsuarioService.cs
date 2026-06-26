@@ -9,14 +9,16 @@ namespace MenteSaudavelAPI._02.Services.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IPasswordHashService _passwordHashService;
+        private readonly ITokenService _tokenService;
 
-        public UsuarioService(IUnitOfWork unitOfWork, IPasswordHashService passwordHashService)
+        public UsuarioService(IUnitOfWork unitOfWork, IPasswordHashService passwordHashService, ITokenService tokenService)
         {
             _unitOfWork = unitOfWork;
             _passwordHashService = passwordHashService;
+            _tokenService = tokenService;
         }
 
-        public async Task<UsuarioTO> ValidarLogin(UsuarioTO usuarioTO)
+        public async Task<LoginRespostaTO> ValidarLogin(UsuarioTO usuarioTO)
         {
             Usuario? usuario = await _unitOfWork.UsuarioRepository.GetUsuarioByEmail(usuarioTO);
 
@@ -25,7 +27,11 @@ namespace MenteSaudavelAPI._02.Services.Services
                 throw new ArgumentException("Email ou senha incorretos.");
             }
 
-            return usuario.ToDto();
+            return new LoginRespostaTO
+            {
+                Token = _tokenService.GerarToken(usuario),
+                Usuario = usuario.ToDto()
+            };
         }
 
         public async Task<List<UsuarioTO>> GetUsuarios()

@@ -1,12 +1,13 @@
 using MenteSaudavelAPI._02.Services.Interfaces.Services;
 using MenteSaudavelAPI._04.Infrastructure.Dto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MenteSaudavelAPI._01.API.Controllers
 {
-    [ApiController]
+    [Authorize]
     [Route("api/dashboard")]
-    public class DashboardController : ControllerBase
+    public class DashboardController : BaseApiController
     {
         private readonly IQuestionarioService _questionarioService;
 
@@ -20,6 +21,9 @@ namespace MenteSaudavelAPI._01.API.Controllers
         {
             try
             {
+                // O histórico é sempre do usuário autenticado; ignora qualquer id vindo do corpo.
+                requestTO.UsuarioId = UsuarioIdAutenticado;
+
                 List<QuestionarioTO> listaQuestionariosRespondidos = await _questionarioService.GetQuestionariosByUsuarioId(requestTO);
 
                 return Ok(listaQuestionariosRespondidos);

@@ -1,7 +1,9 @@
 using MenteSaudavelAPI._02.Services.Interfaces.Services;
 using MenteSaudavelAPI._03.Data.ValueObjects;
 using MenteSaudavelAPI._04.Infrastructure.Dto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace MenteSaudavelAPI._01.API.Controllers
 {
@@ -16,6 +18,8 @@ namespace MenteSaudavelAPI._01.API.Controllers
             _usuarioService = usuarioService;
         }
 
+        [AllowAnonymous]
+        [EnableRateLimiting("login")]
         [HttpPost("login")]
         public async Task<IActionResult> ValidarLogin([FromBody] Dictionary<string, string> dados)
         {
@@ -27,9 +31,9 @@ namespace MenteSaudavelAPI._01.API.Controllers
                     Senha = dados["senha"]
                 };
 
-                UsuarioTO usuario = await _usuarioService.ValidarLogin(usuarioTO);
+                LoginRespostaTO resposta = await _usuarioService.ValidarLogin(usuarioTO);
 
-                return Ok(usuario);
+                return Ok(resposta);
             }
             catch (ArgumentException ex)
             {
@@ -41,6 +45,7 @@ namespace MenteSaudavelAPI._01.API.Controllers
             }
         }
 
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetUsuarios()
         {

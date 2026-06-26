@@ -1,12 +1,13 @@
 using MenteSaudavelAPI._02.Services.Interfaces.Services;
 using MenteSaudavelAPI._04.Infrastructure.Dto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MenteSaudavelAPI._01.API.Controllers
 {
-    [ApiController]
+    [Authorize]
     [Route("api/questionarios")]
-    public class QuestionarioController : ControllerBase
+    public class QuestionarioController : BaseApiController
     {
         private readonly IQuestionarioService _questionarioService;
 
@@ -21,6 +22,11 @@ namespace MenteSaudavelAPI._01.API.Controllers
             try
             {
                 QuestionarioTO questionarioTO = await _questionarioService.GetQuestionario(questionarioId);
+
+                if (questionarioTO.RespondenteId != UsuarioIdAutenticado)
+                {
+                    return Forbid();
+                }
 
                 return Ok(questionarioTO);
             }
@@ -47,7 +53,7 @@ namespace MenteSaudavelAPI._01.API.Controllers
 
                 QuestionarioTO questionarioTO = new QuestionarioTO
                 {
-                    RespondenteId = requestTO.UsuarioId,
+                    RespondenteId = UsuarioIdAutenticado,
                     ListaRespostas = listaRespostasTO
                 };
 
@@ -66,11 +72,11 @@ namespace MenteSaudavelAPI._01.API.Controllers
         }
 
         [HttpPost("relatorio")]
-        public async Task<IActionResult> GetUltimoQuestionarioRespondidoByUsuarioId([FromBody] Guid usuarioId)
+        public async Task<IActionResult> GetUltimoQuestionarioRespondidoByUsuarioId()
         {
             try
             {
-                QuestionarioTO ultimoQuestionarioRespondido = await _questionarioService.GetUltimoQuestionarioRespondidoByUsuarioId(usuarioId);
+                QuestionarioTO ultimoQuestionarioRespondido = await _questionarioService.GetUltimoQuestionarioRespondidoByUsuarioId(UsuarioIdAutenticado);
 
                 return Ok(ultimoQuestionarioRespondido);
             }
