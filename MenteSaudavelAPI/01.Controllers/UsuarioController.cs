@@ -35,9 +35,9 @@ namespace MenteSaudavelAPI._01.API.Controllers
             {
                 return BadRequest(new { Mensagem = ex.Message });
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return StatusCode(500, new { Mensagem = "Ocorreu um erro ao validar email e senha.", Detalhes = ex.Message });
+                return StatusCode(500, new { Mensagem = "Ocorreu um erro ao validar email e senha." });
             }
         }
 
@@ -86,9 +86,9 @@ namespace MenteSaudavelAPI._01.API.Controllers
             {
                 return BadRequest(new { Mensagem = ex.Message });
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return StatusCode(500, new { Mensagem = "Ocorreu um erro ao tentar cadastrar o usuário.", Detalhes = ex.Message });
+                return StatusCode(500, new { Mensagem = "Ocorreu um erro ao tentar cadastrar o usuário." });
             }
         }
     }   

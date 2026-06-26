@@ -33,7 +33,8 @@ namespace MenteSaudavelAPI._02.Services
 
             // Colunas
             modelBuilder.Entity<Usuario>().Property(p => p.Nome).HasMaxLength(100);
-            modelBuilder.Entity<Usuario>().Property(p => p.Senha).HasMaxLength(100);
+            modelBuilder.Entity<Usuario>().Property(p => p.SenhaHash).HasMaxLength(255);
+            modelBuilder.Entity<Usuario>().Ignore(p => p.Senha);
             modelBuilder.Entity<Usuario>().ComplexProperty(cp => cp.Email).Property(p => p.Endereco).HasColumnName("Email").HasMaxLength(100);
             modelBuilder.Entity<Usuario>().ComplexProperty(cp => cp.Genero).Property(p => p.Valor).HasColumnName("Genero");
 

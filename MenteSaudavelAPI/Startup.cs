@@ -30,12 +30,16 @@ namespace MenteSaudavelAPI
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
 
+            string connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+                ?? throw new InvalidOperationException("A connection string 'DefaultConnection' não foi configurada.");
+
             services.AddDbContext<DataBaseContext>(options =>
-                options.UseSqlServer("Server=localhost;Database=MenteSaudavelAPI;Trusted_Connection=True;TrustServerCertificate=True;")
+                options.UseSqlServer(connectionString)
             );
 
             services.AddTransient<DataBaseContext>();
             services.AddTransient<IUnitOfWork, UnitOfWork>();
+            services.AddTransient<IPasswordHashService, PasswordHashService>();
             services.AddTransient<IUsuarioService, UsuarioService>();
             services.AddTransient<IQuestionarioService, QuestionarioService>();
         }
@@ -49,8 +53,9 @@ namespace MenteSaudavelAPI
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
-                app.UseHttpsRedirection();
             }
+
+            app.UseHttpsRedirection();
 
             app.UseCors("AllowReact");
 

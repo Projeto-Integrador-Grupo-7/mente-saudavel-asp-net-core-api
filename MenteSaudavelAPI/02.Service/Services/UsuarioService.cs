@@ -8,17 +8,19 @@ namespace MenteSaudavelAPI._02.Services.Services
     public class UsuarioService : IUsuarioService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IPasswordHashService _passwordHashService;
 
-        public UsuarioService(IUnitOfWork unitOfWork)
+        public UsuarioService(IUnitOfWork unitOfWork, IPasswordHashService passwordHashService)
         {
             _unitOfWork = unitOfWork;
+            _passwordHashService = passwordHashService;
         }
 
         public async Task<UsuarioTO> ValidarLogin(UsuarioTO usuarioTO)
         {
-            Usuario? usuario = await _unitOfWork.UsuarioRepository.GetUsuarioByEmailESenha(usuarioTO);
+            Usuario? usuario = await _unitOfWork.UsuarioRepository.GetUsuarioByEmail(usuarioTO);
 
-            if (usuario is null)
+            if (usuario is null || !_passwordHashService.VerifyPassword(usuarioTO.Senha, usuario.SenhaHash))
             {
                 throw new ArgumentException("Email ou senha incorretos.");
             }
@@ -38,13 +40,16 @@ namespace MenteSaudavelAPI._02.Services.Services
         public async Task<UsuarioTO> CriarUsuario(UsuarioTO usuarioTO)
         {
             Usuario usuario = new Usuario(usuarioTO);
+            
+            string senhaHash = _passwordHashService.HashPassword(usuarioTO.Senha);
+            usuario.DefinirSenhaHash(senhaHash);
 
             _unitOfWork.UsuarioRepository.Add(usuario);
             await _unitOfWork.SaveChangesAsync();
 
-            usuarioTO.UsuarioId = usuario.Id;
-
-            return usuarioTO;
+            // Retorna um DTO derivado da entidade (ToDto não inclui senha/hash),
+            // evitando devolver a senha em claro recebida na requisição ao cliente.
+            return usuario.ToDto();
         }
     }
 }

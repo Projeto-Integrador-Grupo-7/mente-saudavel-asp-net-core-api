@@ -11,11 +11,10 @@ namespace MenteSaudavelAPI._02.Services.Repositories
         {
         }
 
-        public Task<Usuario?> GetUsuarioByEmailESenha(UsuarioTO usuarioTO)
+        public Task<Usuario?> GetUsuarioByEmail(UsuarioTO usuarioTO)
         {
             return Find(usuario =>
-                usuario.Email.Endereco == usuarioTO.Email.Endereco &&
-                usuario.Senha == usuarioTO.Senha)
+                usuario.Email.Endereco == usuarioTO.Email.Endereco)
                 .SingleOrDefaultAsync();
         }
     }

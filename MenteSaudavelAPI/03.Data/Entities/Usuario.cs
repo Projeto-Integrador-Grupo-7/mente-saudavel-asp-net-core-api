@@ -27,23 +27,26 @@ namespace MenteSaudavelAPI._03.Data.Entities
         public Email Email { get; set; }
         public string EmailEndereco => Email.Endereco;
 
-        private string _senha;
-        public string Senha
+        private string _senhaHash;
+        public string SenhaHash
         {
             get
             {
-                return _senha;
+                return _senhaHash;
             }
-            set
+            private set
             {
                 if (string.IsNullOrWhiteSpace(value))
                 {
-                    throw new ArgumentException("Senha não pode ser vazia ou nula.", nameof(value));
+                    throw new ArgumentException("Hash da senha não pode ser vazio ou nulo.", nameof(value));
                 }
 
-                _senha = value;
+                _senhaHash = value;
             }
         }
+
+        [System.ComponentModel.DataAnnotations.Schema.NotMapped]
+        public string Senha { get; set; }
 
         private DateOnly _dataNascimento;
         public DateOnly DataNascimento
@@ -85,6 +88,11 @@ namespace MenteSaudavelAPI._03.Data.Entities
         public void AdicionarQuestionario(Questionario questionario)
         {
             Questionarios.Add(questionario);
+        }
+
+        public void DefinirSenhaHash(string senhaHash)
+        {
+            SenhaHash = senhaHash;
         }
 
         public UsuarioTO ToDto()
